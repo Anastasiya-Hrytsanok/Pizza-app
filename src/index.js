@@ -1,11 +1,62 @@
-import './styles.scss'
+import './styles.sass'
 
-document.getElementById('app').innerHTML = `<p>Click 👆 this button</p>`
+let app = document.getElementById('app');
+let loadBtn = document.getElementById('load-btn');
 
-document.getElementById('load-btn').addEventListener('click', () => {
-  document.getElementById('app').innerHTML = 'waiting...'
+app.innerHTML = `<p>Click 👆 this button</p>`
+
+const countPizzaEaters = (peopleList) => {
+  let pizzaEatersCounter = 0;
+  peopleList.forEach((element) => {
+    if (element.eatsPizza) {
+      pizzaEatersCounter++;
+    }
+  })
+  return pizzaEatersCounter;
+}
+
+const countAllPeople = (peopleList) => {
+  let allPeopleCounter = peopleList.length + 1;
+  return allPeopleCounter;
+}
+
+const dividePizza = (pizzaEatersPersonsCount) => {
+  let angleStep = 360 / pizzaEatersPersonsCount;
+  for (let i = 1; i <= pizzaEatersPersonsCount / 2; i++) {
+    let div = document.createElement('div');
+    div.className = 'slice';
+    div.style.transform = `rotate(${angleStep * i}deg)`;
+    document.getElementsByClassName('slices')[0].append(div);
+  }
+}
+
+const displayPizza = () => {
+  document.getElementsByClassName('pizza-container')[0].style.display = 'flex';
+}
+
+const renderDiscription = (allPeopleCount, pizzaEatersCount) => {
+  document.getElementsByClassName('description')[0].innerHTML = `There will be ${allPeopleCount} people at the party, 
+  ${pizzaEatersCount} people will eat pizza!`;
+}
+
+const cleanSlices = () => {
+  document.getElementsByClassName('slices')[0].innerHTML = '';
+}
+
+loadBtn.addEventListener('click', () => {
+  app.innerHTML = 'waiting...';
+  loadBtn.className = 'loading';
 
   fetch('https://gp-js-test.herokuapp.com/pizza')
     .then((response) => response.json())
-    .then((data) => console.log(data))
-})
+    .then((data) => {
+      cleanSlices();
+      loadBtn.classList.remove('loading');
+      app.innerHTML = '<br>';
+      displayPizza();
+      const pizzaEatersCounter = countPizzaEaters(data.party);
+      dividePizza(pizzaEatersCounter);
+      const allPeopleCounter = countAllPeople(data.party);
+      renderDiscription(allPeopleCounter, pizzaEatersCounter);
+    })
+});
