@@ -6,18 +6,7 @@ let loadBtn = document.getElementById('load-btn');
 app.innerHTML = `<p>Click 👆 this button</p>`
 
 const countPizzaEaters = (peopleList) => {
-  let pizzaEatersCounter = 0;
-  peopleList.forEach((element) => {
-    if (element.eatsPizza) {
-      pizzaEatersCounter++;
-    }
-  })
-  return pizzaEatersCounter;
-}
-
-const countAllPeople = (peopleList) => {
-  let allPeopleCounter = peopleList.length + 1;
-  return allPeopleCounter;
+  return peopleList.filter((element) => element.eatsPizza).length;
 }
 
 const dividePizza = (pizzaEatersPersonsCount) => {
@@ -56,7 +45,6 @@ loadBtn.addEventListener('click', () => {
       displayPizza();
       const pizzaEatersCounter = countPizzaEaters(data.party);
       dividePizza(pizzaEatersCounter);
-      const allPeopleCounter = countAllPeople(data.party);
-      renderDiscription(allPeopleCounter, pizzaEatersCounter);
+      renderDiscription(data.party.length, pizzaEatersCounter);
     })
 });
